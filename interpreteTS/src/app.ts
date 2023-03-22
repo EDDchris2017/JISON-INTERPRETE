@@ -1,6 +1,8 @@
-import express 	from 'express';
-import path 	from 'path';
-
+import express 		from 'express';
+import path 		from 'path';
+import cookieParser from 'cookie-parser';
+import bodyParser   from 'body-parser';
+import { Analizador } from './Analizador/Analizador';
 
 const app = express();
 const port = 3000;
@@ -9,6 +11,16 @@ const port = 3000;
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+console.log(__dirname);
+app.use(express.static(path.join(__dirname, '../public')));
+
+
+
+// ===================================== RUTAS
 app.listen(port, err => {
     if (err) {
     	return console.error(err);
@@ -22,7 +34,19 @@ app.get('/status', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-	res.render('index.ejs', { title: 'InterpreteTS - JISON', message: 'Vista procesada correctamente con EJS!' });
+	res.render('index.ejs', { title: 'InterpreteTS - JISON', salida: '', codigo:""});
+});
+
+app.post('/ejecutar', (req, res) => {
+    
+    let cadena_codigo = req.body.codigo;
+    let analizador = new Analizador(cadena_codigo, "editor");
+    let valido:boolean = analizador.Analizar();
+    if(valido === true){
+        res.render('index.ejs', { title: 'InterpreteTS - JISON', salida: 'EXITO en lectura de cadena', codigo: cadena_codigo});
+    }else{
+        res.render('index.ejs', { title: 'InterpreteTS - JISON', salida: 'ERROR al procesar cadena', codigo: cadena_codigo});
+    }
 });
 
 

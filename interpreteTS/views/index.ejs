@@ -2,8 +2,59 @@
 <html>
 <head>
 	<title><%= title %></title>
+
+    <!-- =================================== IMPORTACIONES =============================== -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- ================================= ESTILOS BOOSTRAP =========================== -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <!-- ================================= CODEMIRROR =========================== -->
+    <link rel="stylesheet" href="/codemirror/lib/codemirror.css">
+    <script src="/codemirror/lib/codemirror.js"></script>
+
+     <script src="/codemirror/lib/codemirror.js"></script>
+     <script src="/codemirror/mode/clike/clike.js"></script>
+     <link rel="stylesheet" href="/codemirror/lib/codemirror.css"/>
+     <script src="/codemirror/mode/javascript/javascript.js"></script>              <!-- MODO   -->
+     <link href="/codemirror/theme/midnight.css" rel="stylesheet" />       <!-- TEMA   -->
+     <!-- CODEMIRROR ADDONS -->
+     <script src="/codemirror/addon/edit/closebrackets.js"></script>      
+     <script src="/codemirror/addon/selection/active-line.js"></script>
 </head>
 <body>
-	<h1><%= message %></h1>
+	<h1><%= title %></h1>
+    <div class="row">
+        <div class="col-6"><h2>Entrada</h2></div>
+        <div class="col-6"><h2>Salida</h2></div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <form method="POST" action="/ejecutar">
+                <button type="submit" class="btn btn-outline-success">Ejecutar</button>
+                <textarea  id="editor" name="codigo"><%= codigo %></textarea>
+            </form>
+        </div>
+        <div class="col-6"> 
+            <div class="row">
+                <div class="col-2">
+                    <textarea id="consola" name="textarea" rows="7" cols="110"><%= salida %></textarea>
+                </div>
+            </div>
+        </div>   
+    </div>
+
+    <script>
+
+        let editor = CodeMirror.fromTextArea(document.getElementById("editor"),{
+                    lineNumbers         : true,
+                    mode                : "text/x-java",
+                    theme               : "midnight",
+                    autoCloseBrackets   : true,
+                    //lineWrapping : true,
+                    styleActiveLine     : true
+                });
+        editor.setSize("730","650");
+    </script>
 </body>
 </html>
