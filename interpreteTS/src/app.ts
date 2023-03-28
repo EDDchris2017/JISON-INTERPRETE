@@ -3,6 +3,7 @@ import path 		from 'path';
 import cookieParser from 'cookie-parser';
 import bodyParser   from 'body-parser';
 import { Analizador } from './Analizador/Analizador';
+import { AST } from './Entorno/AST';
 
 const app = express();
 const port = 3000;
@@ -41,10 +42,10 @@ app.post('/ejecutar', (req, res) => {
     
     let cadena_codigo = req.body.codigo;
     let analizador = new Analizador(cadena_codigo, "editor");
-    let valido:boolean = analizador.Analizar();
-    if(valido === true){
-        res.render('index.ejs', { title: 'InterpreteTS - JISON', salida: 'EXITO en lectura de cadena', codigo: cadena_codigo});
-    }else{
+    let ast: AST = analizador.Analizar();
+    if(ast != undefined) {
+        res.render('index.ejs', { title: 'InterpreteTS - JISON', salida: ast.getSalida(), codigo: cadena_codigo});
+    } else{
         res.render('index.ejs', { title: 'InterpreteTS - JISON', salida: 'ERROR al procesar cadena', codigo: cadena_codigo});
     }
 });

@@ -1,3 +1,5 @@
+import { AST } from '../Entorno/AST';
+import { Raiz } from '../Entorno/Raiz';
 import Parser from './Parser';
 
 export class Analizador
@@ -16,11 +18,16 @@ export class Analizador
     {
        // let parser:any = require("./Parser").parser;
        	let parser:any 	= Parser.parser;
-        let valido = false;
+        let arbol:AST   = undefined;
+
         try{
-            let valido:boolean = parser.parse(this.entrada);
-            console.log(valido);
-            return valido;
+            let raiz:Raiz    = parser.parse(this.entrada);
+            arbol = new AST(raiz);
+
+            // Ejecutar
+            arbol.ejecutar();
+
+            return arbol;
         }catch(e){
             console.log(e);
             return false;
