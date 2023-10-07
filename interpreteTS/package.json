@@ -3,7 +3,8 @@
   	"version": "0.0.0",
   	"private": true,
   	"scripts": {
-  	  	"prepublishOnly": "npm audit --audit-level=moderate"
+  	  	"prepublishOnly": "npm audit --audit-level=moderate",
+		"start": "nodemon"
   	},
   	"dependencies": {
   	  	"cookie-parser": "1.4.6",
