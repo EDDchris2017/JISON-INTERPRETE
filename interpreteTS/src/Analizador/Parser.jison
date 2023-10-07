@@ -14,6 +14,7 @@
     let OperacionRelacional         =   require("../Expresiones/OperacionRelacional").OperacionRelacional;
     let While                       =   require("../Instrucciones/While").While;
     let Valor                       =   require("../Expresiones/Valor").Valor;
+    let For                         =   require("../Instrucciones/For").For;
 %}
 /* description: Parses end executes mathematical expressions. */
 
@@ -31,7 +32,7 @@ frac                        (?:\.[0-9]+)
 
 %%
 
-\s+                             {/* skip whitespace */}
+\s+                             {}
 <<EOF>>                         {return 'EOF';}
 
 /* COMENTARIOS */
@@ -50,6 +51,7 @@ frac                        (?:\.[0-9]+)
 "else"                          {   return 'telse';     }
 "void"                          {   return 'tvoid';     }
 "return"                        {   return 'treturn';   }
+"for"                           {   return 'tfor';      }
 
 /* =================== EXPRESIONES REGULARES ===================== */
 ([a-zA-ZÑñ]|("_"[a-zA-ZÑñ]))([a-zA-ZÑñ]|[0-9]|"_")*             yytext = yytext.toLowerCase();          return 'id';
@@ -145,10 +147,11 @@ BLOQUE_SENTENCAS : '{' SENTENCIAS '}'
 
 SENTENCIA :     DECLARACION ';'             { $$ = $1; }
             |   FUNCION                     { $$ = $1; }
-            |   ASIGNACION                  { $$ = $1; }
+            |   ASIGNACION  ';'             { $$ = $1; }
             |   IF                          { $$ = $1; }
             |   LLAMADA_FUNCION  ';'        { $$ = $1; }
             |   WHILE                       { $$ = $1; }
+            |   FOR                         { $$ = $1; }
 ;
 
 DECLARACION : TIPO  id  '=' EXP 
@@ -161,7 +164,7 @@ DECLARACION : TIPO  id  '=' EXP
             }
 ;
 
-ASIGNACION  :    id '=' EXP ';'
+ASIGNACION  :    id '=' EXP 
             {
                 $$ = new Asignacion($1, $3, @1.first_line, @1.first_column);
             }
@@ -192,6 +195,16 @@ ELSE    :   telse IF
 WHILE   : twhile '(' EXP ')' BLOQUE_SENTENCAS
         {
             $$ = new While($3, $5, @1.first_line, @1.first_column );
+        }
+;
+
+FOR     : tfor '(' DECLARACION ';' EXP ';' ASIGNACION ')'   BLOQUE_SENTENCAS
+        {
+            $$ = new For($3, $5, $7, $9, @1.first_line, @1.first_column);
+        }
+        | tfor '(' ASIGNACION ';' EXP ';' ASIGNACION ')'    BLOQUE_SENTENCAS
+        {
+            $$ = new For($3, $5, $7, $9, @1.first_line, @1.first_column);
         }
 ;
 
